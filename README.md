@@ -96,13 +96,14 @@ El juego se compone de tres archivos que cooperan:
 
 Define la estructura visual:
 
+- Un `<h1 class="game-title">` con el título **TETRIS**, donde cada letra va en su propio `<span>` para pintarla con uno de los colores de las piezas.
 - Un `<canvas id="board">` de **300 × 600** píxeles donde se renderiza el tablero.
 - Un panel lateral con `SCORE`, `LINES`, `LEVEL`, vista de la siguiente pieza y la lista de controles.
 - Un overlay para los estados **PAUSA** y **GAME OVER**.
 
 ### 2. `style.css`
 
-Aporta el aspecto visual con estética _dark / retro arcade_: fondo oscuro, tipografía monoespaciada para los marcadores y _backdrop blur_ en los overlays.
+Aporta el aspecto visual con estética _dark / retro arcade_: fondo oscuro, tipografía monoespaciada para los marcadores y _backdrop blur_ en los overlays. El `<body>` es un _flex_ en columna, de modo que el título queda sobre el área de juego y el overlay de **PAUSA** / **GAME OVER** sigue cubriendo únicamente el tablero y el panel. Los colores de las letras del título se asignan con `:nth-child` y replican los de `COLORS` en `game.js`.
 
 ### 3. `game.js`
 
@@ -178,6 +179,8 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
 
 > Si cambias `COLS`, `ROWS` o `BLOCK`, recuerda ajustar también `width` y `height` del `<canvas id="board">` en `index.html` para que coincida (`COLS × BLOCK` × `ROWS × BLOCK`).
+
+> Si cambias `COLORS`, las letras del título en `style.css` (`.game-title span:nth-child(...)`) mantienen sus valores duplicados: actualízalas para que el título siga coincidiendo con las piezas.
 
 ---
 
