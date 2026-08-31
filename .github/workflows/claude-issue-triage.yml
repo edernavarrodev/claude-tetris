@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: read
       issues: write
       id-token: write
 
@@ -21,7 +22,8 @@ jobs:
       - name: Run Claude Issue Triage
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
           prompt: |
             Analiza el issue #${{ github.event.issue.number }} de este repositorio (Tetris en HTML/CSS/JS
             vanilla, sin dependencias ni build; ver CLAUDE.md para la arquitectura de game.js).
