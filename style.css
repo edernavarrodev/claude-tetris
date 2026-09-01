@@ -30,6 +30,15 @@ body {
   text-shadow: 0 0 18px currentColor;
 }
 
+.game-author {
+  margin-top: -16px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #555570;
+  text-transform: uppercase;
+}
+
 /* Una letra por pieza: mismos colores que COLORS (1–6) en game.js */
 .game-title span:nth-child(1) { color: #4dd0e1; } /* I - cyan */
 .game-title span:nth-child(2) { color: #ffd54f; } /* O - yellow */
