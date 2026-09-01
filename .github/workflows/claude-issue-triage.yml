@@ -20,10 +20,11 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude Issue Triage
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@v1.0.212
+        env:
+          ACTIONS_STEP_DEBUG: 'true'
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          show_full_output: true
           prompt: |
             Analiza el issue #${{ github.event.issue.number }} de este repositorio (Tetris en HTML/CSS/JS
             vanilla, sin dependencias ni build; ver CLAUDE.md para la arquitectura de game.js).
