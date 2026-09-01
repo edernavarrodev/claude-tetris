@@ -20,9 +20,10 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude Issue Triage
-        uses: anthropics/claude-code-action@v1.0.212
+        uses: anthropics/claude-code-action@v1
         env:
           ACTIONS_STEP_DEBUG: 'true'
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
