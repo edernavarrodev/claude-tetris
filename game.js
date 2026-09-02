@@ -26,6 +26,17 @@ const PIECES = [
   [[0,0,7],[7,7,7],[0,0,0]],                  // L
 ];
 
+const PASTEL_COLORS = [
+  null,
+  '#a8e6ef', // I
+  '#ffe9b3', // O
+  '#dfb3e8', // T
+  '#bde3bd', // S
+  '#f2b8b8', // Z
+  '#b9c1e8', // J
+  '#ffd6ac', // L
+];
+
 const LINE_SCORES = [0, 100, 300, 500, 800];
 const RECORDS_KEY = 'tetris-records';
 const MAX_RECORDS = 5;
@@ -55,12 +66,15 @@ const overlayRecordsListEl = document.getElementById('overlay-records-list');
 const nameEntry = document.getElementById('name-entry');
 const playerNameInput = document.getElementById('player-name-input');
 const saveScoreBtn = document.getElementById('save-score-btn');
+const skinSelect = document.getElementById('skin-select');
 
 const THEME_KEY = 'tetris-theme';
 const START_LEVEL_KEY = 'tetris-start-level';
+const SKIN_KEY = 'tetris-skin';
+const SKINS = ['retro', 'neon', 'pastel', 'pixel'];
 
 let board, current, next, score, lines, level, startLevel, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
-let theme, gridColor;
+let theme, gridColor, skin;
 let comboCount, runBestCombo, records, pendingRecord;
 
 function createBoard() {
@@ -182,6 +196,15 @@ function updateHUD() {
 
 function drawBlock(context, x, y, colorIndex, size, alpha) {
   if (!colorIndex) return;
+  switch (skin) {
+    case 'neon': drawBlockNeon(context, x, y, colorIndex, size, alpha); break;
+    case 'pastel': drawBlockPastel(context, x, y, colorIndex, size, alpha); break;
+    case 'pixel': drawBlockPixel(context, x, y, colorIndex, size, alpha); break;
+    default: drawBlockRetro(context, x, y, colorIndex, size, alpha);
+  }
+}
+
+function drawBlockRetro(context, x, y, colorIndex, size, alpha) {
   const color = COLORS[colorIndex];
   context.globalAlpha = alpha ?? 1;
   context.fillStyle = color;
@@ -189,6 +212,45 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
   // highlight
   context.fillStyle = 'rgba(255,255,255,0.12)';
   context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  context.globalAlpha = 1;
+}
+
+function drawBlockNeon(context, x, y, colorIndex, size, alpha) {
+  const color = COLORS[colorIndex];
+  context.globalAlpha = alpha ?? 1;
+  context.shadowBlur = 12;
+  context.shadowColor = color;
+  context.fillStyle = color;
+  context.fillRect(x * size + 2, y * size + 2, size - 4, size - 4);
+  context.shadowBlur = 0;
+  context.strokeStyle = 'rgba(255,255,255,0.5)';
+  context.lineWidth = 1;
+  context.strokeRect(x * size + 2, y * size + 2, size - 4, size - 4);
+  context.globalAlpha = 1;
+}
+
+function drawBlockPastel(context, x, y, colorIndex, size, alpha) {
+  const color = PASTEL_COLORS[colorIndex];
+  context.globalAlpha = alpha ?? 1;
+  context.fillStyle = color;
+  context.beginPath();
+  context.roundRect(x * size + 1, y * size + 1, size - 2, size - 2, 6);
+  context.fill();
+  context.globalAlpha = 1;
+}
+
+function drawBlockPixel(context, x, y, colorIndex, size, alpha) {
+  const color = COLORS[colorIndex];
+  context.globalAlpha = alpha ?? 1;
+  context.fillStyle = color;
+  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+  const half = (size - 2) / 2;
+  context.fillStyle = 'rgba(255,255,255,0.15)';
+  context.fillRect(x * size + 1, y * size + 1, half, half);
+  context.fillRect(x * size + 1 + half, y * size + 1 + half, half, half);
+  context.fillStyle = 'rgba(0,0,0,0.15)';
+  context.fillRect(x * size + 1 + half, y * size + 1, half, half);
+  context.fillRect(x * size + 1, y * size + 1 + half, half, half);
   context.globalAlpha = 1;
 }
 
@@ -311,6 +373,19 @@ function renderRecordsPanel() {
 
 function renderOverlayRecords(highlightEntry) {
   renderRecordsRows(overlayRecordsListEl, highlightEntry);
+}
+
+function applySkin(value) {
+  skin = value;
+  document.documentElement.dataset.skin = skin;
+  skinSelect.value = skin;
+  draw();
+  drawNext();
+}
+
+function changeSkin() {
+  applySkin(skinSelect.value);
+  localStorage.setItem(SKIN_KEY, skin);
 }
 
 function endGame() {
@@ -440,8 +515,10 @@ for (let i = 1; i <= 10; i++) {
 startLevelSelect.value = localStorage.getItem(START_LEVEL_KEY) || '1';
 resetRecordsBtn.addEventListener('click', resetRecords);
 saveScoreBtn.addEventListener('click', saveScore);
+skinSelect.addEventListener('change', changeSkin);
 
 applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark');
 records = loadRecords();
 renderRecordsPanel();
 init();
+applySkin(SKINS.includes(localStorage.getItem(SKIN_KEY)) ? localStorage.getItem(SKIN_KEY) : 'retro');

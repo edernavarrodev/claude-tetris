@@ -153,6 +153,25 @@ body {
   background: var(--board-border);
 }
 
+.skin-select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+}
+
+/* ---- Skins ---- */
+[data-skin="neon"] {
+  --board-bg: #000000;
+  --grid-line: #001a1a;
+}
+
 /* ---- Controles ---- */
 .controls ul {
   list-style: none;
