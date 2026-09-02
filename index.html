@@ -66,7 +66,7 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd> <kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
       </aside>
@@ -83,6 +83,29 @@
         </div>
         <ol id="overlay-records-list" class="records-list hidden"></ol>
         <button id="restart-btn">Reiniciar</button>
+
+        <div id="pause-menu" class="pause-menu hidden">
+          <div class="pause-menu-actions">
+            <button id="resume-btn" type="button">Reanudar</button>
+            <button id="pause-restart-btn" type="button">Reiniciar</button>
+            <button id="toggle-controls-btn" type="button">Ver controles</button>
+          </div>
+
+          <div class="pause-level-select">
+            <label for="start-level-input">Nivel inicial</label>
+            <input id="start-level-input" type="number" min="1" max="9" value="1" />
+          </div>
+
+          <div id="pause-controls" class="controls hidden">
+            <ul>
+              <li><kbd>←</kbd><kbd>→</kbd> mover</li>
+              <li><kbd>↑</kbd> rotar</li>
+              <li><kbd>↓</kbd> bajar</li>
+              <li><kbd>Space</kbd> caída</li>
+              <li><kbd>P</kbd> <kbd>Esc</kbd> pausa</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
