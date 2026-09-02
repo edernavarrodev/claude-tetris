@@ -156,6 +156,130 @@ body {
   background: var(--board-border);
 }
 
+/* ---- Récords ---- */
+.hidden {
+  display: none !important;
+}
+
+.records-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+}
+
+.records-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.records-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90px;
+}
+
+.records-score {
+  color: var(--value-color);
+  font-weight: 700;
+}
+
+.records-item--new {
+  background: var(--kbd-bg);
+  outline: 1px solid var(--value-color);
+  animation: records-highlight 1.6s ease-in-out 2;
+}
+
+@keyframes records-highlight {
+  0%, 100% { background: var(--kbd-bg); }
+  50% { background: var(--value-color); color: var(--restart-color); }
+}
+
+.records-empty {
+  color: var(--controls-color);
+  font-size: 12px;
+}
+
+.records-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--controls-color);
+}
+
+.records-stats strong {
+  color: var(--value-color);
+}
+
+.reset-records-btn {
+  background: transparent;
+  color: var(--label-color);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s, color 0.15s;
+  align-self: flex-start;
+}
+
+.reset-records-btn:hover {
+  background: var(--kbd-bg);
+  color: var(--text);
+}
+
+/* ---- Entrada de nombre (overlay) ---- */
+.name-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.name-entry input {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--kbd-border);
+  background: var(--board-bg);
+  color: var(--text);
+  text-align: center;
+  width: 160px;
+}
+
+.name-entry button {
+  background: var(--restart-bg);
+  color: var(--restart-color);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.name-entry button:hover {
+  background: var(--restart-hover);
+}
+
+.overlay #overlay-records-list {
+  max-width: 220px;
+  width: 100%;
+}
+
 /* ---- Controles ---- */
 .controls ul {
   list-style: none;
@@ -192,10 +316,6 @@ kbd {
   background: var(--overlay-bg);
   backdrop-filter: blur(4px);
   border-radius: 4px;
-}
-
-.overlay.hidden {
-  display: none;
 }
 
 .overlay-box {
