@@ -61,6 +61,12 @@ const resetRecordsBtn = document.getElementById('reset-records-btn');
 const nameEntryEl = document.getElementById('name-entry');
 const playerNameInput = document.getElementById('player-name');
 const saveRecordBtn = document.getElementById('save-record-btn');
+const pauseMenu = document.getElementById('pause-menu');
+const resumeBtn = document.getElementById('resume-btn');
+const pauseRestartBtn = document.getElementById('pause-restart-btn');
+const toggleControlsBtn = document.getElementById('toggle-controls-btn');
+const pauseControls = document.getElementById('pause-controls');
+const startLevelInput = document.getElementById('start-level-input');
 
 const THEME_KEY = 'tetris-theme';
 const SKIN_KEY = 'tetris-skin';
@@ -71,6 +77,9 @@ let board, current, next, score, lines, level, paused, gameOver, lastTime, dropA
 let theme, gridColor;
 let skin = 'retro';
 let combo, comboMax;
+// A *setting*, not per-run state: chosen in the pause menu, read by init() to
+// seed `level`, and deliberately NOT reset inside init() so it survives Reiniciar.
+let startLevel = 1;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -136,14 +145,20 @@ function clearLines() {
   if (cleared) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.floor(lines / 10) + 1;
-    dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+    level = startLevel + Math.floor(lines / 10);
+    dropInterval = dropIntervalForLevel(level);
     combo++;
     comboMax = Math.max(comboMax, combo);
     updateHUD();
   } else {
     combo = 0;
   }
+}
+
+// Derived speed curve, shared by init() and clearLines() (CLAUDE.md invariant:
+// level/speed are derived, never incremented).
+function dropIntervalForLevel(lvl) {
+  return Math.max(100, 1000 - (lvl - 1) * 90);
 }
 
 function ghostY() {
@@ -434,6 +449,24 @@ function changeSkin(value) {
   if (next) drawNext();
 }
 
+// Single place that decides which overlay content is visible, so the three
+// call sites below (endGame, togglePause, init) can't drift out of sync.
+function setOverlayMode(mode) {
+  // mode: 'pause' | 'gameover' | null (hidden)
+  if (mode === 'pause') {
+    restartBtn.classList.add('hidden');
+    pauseMenu.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+  } else if (mode === 'gameover') {
+    restartBtn.classList.remove('hidden');
+    pauseMenu.classList.add('hidden');
+    overlay.classList.remove('hidden');
+  } else {
+    overlay.classList.add('hidden');
+    pauseMenu.classList.add('hidden');
+  }
+}
+
 function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
@@ -448,20 +481,24 @@ function endGame() {
   } else {
     nameEntryEl.classList.add('hidden');
   }
-  overlay.classList.remove('hidden');
+  setOverlayMode('gameover');
 }
 
 function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    setOverlayMode(null);
     lastTime = performance.now();
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
     overlayTitle.textContent = 'PAUSA';
     overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
+    pauseControls.classList.add('hidden');
+    toggleControlsBtn.textContent = 'Ver controles';
+    startLevelInput.value = startLevel;
+    setOverlayMode('pause');
   }
 }
 
@@ -485,18 +522,18 @@ function init() {
   board = createBoard();
   score = 0;
   lines = 0;
-  level = 1;
+  level = startLevel;
   combo = 0;
   comboMax = 0;
   paused = false;
   gameOver = false;
-  dropInterval = 1000;
+  dropInterval = dropIntervalForLevel(level);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
-  overlay.classList.add('hidden');
+  setOverlayMode(null);
   nameEntryEl.classList.add('hidden');
   overlayRecordsListEl.classList.add('hidden');
   cancelAnimationFrame(animId);
@@ -504,7 +541,12 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'Escape' && document.activeElement === startLevelInput) {
+    // Cancel the pending edit instead of resuming the game out from under it.
+    startLevelInput.blur();
+    return;
+  }
+  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
@@ -539,6 +581,19 @@ playerNameInput.addEventListener('keydown', e => {
     e.preventDefault();
     submitRecord();
   }
+});
+resumeBtn.addEventListener('click', togglePause);
+pauseRestartBtn.addEventListener('click', init);
+toggleControlsBtn.addEventListener('click', () => {
+  const nowHidden = pauseControls.classList.toggle('hidden');
+  toggleControlsBtn.textContent = nowHidden ? 'Ver controles' : 'Ocultar controles';
+});
+startLevelInput.addEventListener('change', () => {
+  let v = parseInt(startLevelInput.value, 10);
+  if (isNaN(v)) v = 1;
+  v = Math.min(9, Math.max(1, v));
+  startLevelInput.value = v;
+  startLevel = v;
 });
 
 applyTheme(localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark');
