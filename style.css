@@ -134,8 +134,9 @@ body {
   border-radius: 4px;
 }
 
-/* ---- Tema ---- */
-.theme-toggle-btn {
+/* ---- Tema / Skin ---- */
+.theme-toggle-btn,
+.skin-select {
   background: var(--kbd-bg);
   color: var(--text);
   border: 1px solid var(--kbd-border);
@@ -147,9 +148,11 @@ body {
   letter-spacing: 0.5px;
   transition: background 0.15s;
   align-self: flex-start;
+  font-family: inherit;
 }
 
-.theme-toggle-btn:hover {
+.theme-toggle-btn:hover,
+.skin-select:hover {
   background: var(--board-border);
 }
 
