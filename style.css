@@ -216,6 +216,78 @@ kbd {
   color: var(--value-color);
 }
 
+.pause-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  width: 180px;
+}
+
+.pause-menu.hidden {
+  display: none;
+}
+
+#resume-btn,
+#controls-btn {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+#resume-btn:hover,
+#controls-btn:hover {
+  background: var(--board-border);
+}
+
+.controls-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: var(--board-bg);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+}
+
+.controls-list.hidden {
+  display: none;
+}
+
+.controls-list li {
+  font-size: 12px;
+  color: var(--controls-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.start-level-label {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--label-color);
+  font-weight: 600;
+  text-align: left;
+}
+
+#start-level-select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
 #restart-btn {
   margin-top: 8px;
   background: var(--restart-bg);
